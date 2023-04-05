@@ -47,13 +47,13 @@ public:
     // thresholds
     CondType type;
     float threshold;
-    
+
     vector<Block *> blocks;                     // list of blocks to check for their sum
     vector<pair<Block *, BlockParams>> updates; // list of new parameters for some blocks if the condition is met
     bool satisfied;                             // whether the condition is already satisfied
 
     float IncomeNeeded(); // compute the income needed to satisfy the condition
-    float needed; //to be computed by the above function
+    float needed;         // to be computed by the above function
 };
 
 class Waterfall
@@ -65,12 +65,12 @@ public:
 
     void addCondition(Condition *c); // add a condition to the waterfall
 
-    void computeRates(Block *startBlock); // compute the rates for each block, initially called on (startBlock,1).
-    Condition *findFirstCondition();                         // find the first condition that will be satisfied
-    void runIncome(Block *startBlock, float initialIncome);  // run income through the waterfall, starting at block
-    void flow(Block *startBlock, float income);              // basic version of runIncome, without conditions
-    void printValues();                                      // print revenues and turnovers of all blocks
+    void computeRates(Block *startBlock);                   // compute the rates for each block, initially called on (startBlock,1).
+    Condition *findFirstCondition();                        // find the first condition that will be satisfied
+    void runIncome(Block *startBlock, float initialIncome); // run income through the waterfall, starting at block
+    void flow(Block *startBlock, float income);             // basic version of runIncome, without conditions
+    void printValues();                                     // print revenues and turnovers of all blocks
 
-    private:
+private:
     void localComputeRates(Block *startBlock, float initialRate); // compute the rates for each block, initially called on (startBlock,1).
 };

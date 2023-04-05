@@ -23,8 +23,9 @@ void Waterfall::addCondition(Condition *c)
     conditions.push_back(c);
 }
 
-void Waterfall::localComputeRates(Block *startBlock, float initialRate){
-     startBlock->globalRevenueRate = startBlock->params.localRate * initialRate;
+void Waterfall::localComputeRates(Block *startBlock, float initialRate)
+{
+    startBlock->globalRevenueRate = startBlock->params.localRate * initialRate;
     startBlock->globalTurnoverRate = initialRate;
     float remainRate = 1 - startBlock->globalRevenueRate;
     for (auto &child : startBlock->params.children)
