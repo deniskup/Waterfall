@@ -11,7 +11,8 @@ int main()
     Block *b1 = new Block(0.25, b2);
     w->blocks = {b1, b2, b3};
 
-    w->addCondition(new Condition(CondType::REVENUE, 300, {b2}, {{b2, BlockParams(0, b2->params.children)}}));
+    w->addCondition(new Condition(CondType::REVENUE, 400, {b2}, {{b2, BlockParams(0, b2->params.children)}}));
+    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, BlockParams(.01, b1->params.children)}}));
 
     w->runIncome(b1, 1000);
     w->printValues();
@@ -28,6 +29,7 @@ void Waterfall::localComputeRates(Block *startBlock, float initialRate)
     startBlock->globalRevenueRate = startBlock->params.localRate * initialRate;
     startBlock->globalTurnoverRate = initialRate;
     float remainRate = 1 - startBlock->globalRevenueRate;
+    cout << "globalRevenueRate = " << startBlock->globalRevenueRate << endl;
     for (auto &child : startBlock->params.children)
     {
         localComputeRates(child.first, child.second * remainRate); // pass the remains to each child
@@ -64,6 +66,7 @@ Condition *Waterfall::findFirstCondition()
             firstCondition = condition;
         }
     }
+    cout << "MinIncomeNeeded = " << MinIncomeNeeded << endl;
     return firstCondition;
 }
 
@@ -148,7 +151,7 @@ Block::Block(float localRate, vector<pair<Block *, float>> children) : Block(loc
 }
 
 // only one son
-Block::Block(float localRate, Block *b) : Block(localRate, {make_pair(b, 1)})
+Block::Block(float localRate, Block *b) : Block(localRate, {{b, 1}})
 {
 }
 
@@ -165,24 +168,27 @@ Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vec
 // take the computed global rates into account to compute the income needed
 float Condition::IncomeNeeded()
 {
-    float condRate = 0; // rate of the condition
+    float condRate = 0;   // rate of the condition
+    float amountDone = 0; // what part of the condition is already done
     for (auto &block : blocks)
     {
         switch (type)
         {
         case CondType::REVENUE:
             condRate += block->globalRevenueRate;
+            amountDone += block->revenue;
             break;
         case CondType::TURNOVER:
             condRate += block->globalTurnoverRate;
+            amountDone += block->turnover;
             break;
         }
     }
-    // income needed = threshold / condRate
+    // income needed = (threshold - amountDone) / condRate
     if (condRate == 0)
         needed = -1; // avoid division by 0 (no condition
     else
-        needed = threshold / condRate;
+        needed = (threshold - amountDone) / condRate;
     return needed;
 }
 
