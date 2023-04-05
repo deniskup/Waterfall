@@ -7,7 +7,7 @@ Originally b1 takes 25%, b2 50%, b3 100%
 Condition 1: if revenue of b1 reaches 200, then b1 local rate becomes .01, and b2 local rate becomes 0.9
 Condition 2: if revenue of b2 reaches 250, then b2 local rate becomes 0
 
-Compuation step by step:
+Computation step by step:
 Data are always given for b1,b2,b3 in this order.
 
 globalRevenueRate = 0.25
