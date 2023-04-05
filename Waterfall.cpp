@@ -11,12 +11,12 @@ int main()
     Block *b1 = new Block(0.25, b2);
     w->blocks = {b1, b2, b3};
 
-    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, .01},{b2,.9}}));
-    w->addCondition(new Condition(CondType::REVENUE, 500, {b2}, {{b2,0}}));
-    
+    // if revenue of b1 reaches 200, then b1 local rate becomes .01, and b2 local rate becomes 0.9
+    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, .01}, {b2, .9}}));
+    // if revenue of b2 reaches 250, then b2 local rate becomes 0
+    w->addCondition(new Condition(CondType::REVENUE, 250, {b2}, {{b2, 0}}));
 
     w->runIncome(b1, 1000);
-    w->printValues();
     return 0;
 }
 
@@ -29,7 +29,7 @@ void Waterfall::localComputeRates(Block *startBlock, float initialRate)
 {
     startBlock->globalRevenueRate = startBlock->params.localRate * initialRate;
     startBlock->globalTurnoverRate = initialRate;
-    float remainRate = 1 - startBlock->globalRevenueRate;
+    float remainRate = initialRate - startBlock->globalRevenueRate;
     cout << "globalRevenueRate = " << startBlock->globalRevenueRate << endl;
     for (auto &child : startBlock->params.children)
     {
@@ -81,17 +81,20 @@ void Waterfall::runIncome(Block *startBlock, float initialIncome)
         if (firstCondition == nullptr)
         {
             flow(startBlock, income);
+            printValues();
             break;
         }
         float incomeNeeded = firstCondition->needed;
         if (incomeNeeded > income)
         {
             flow(startBlock, income);
+            printValues();
             break;
         }
         else
         {
             flow(startBlock, incomeNeeded);
+            printValues();
             income -= incomeNeeded;
             firstCondition->satisfied = true;
             for (auto &update : firstCondition->updates)
@@ -160,7 +163,7 @@ Condition::Condition(CondType type, float threshold) : type(type), threshold(thr
 {
 }
 
-Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *,float>> blockRates) : Condition(type, threshold)
+Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *, float>> blockRates) : Condition(type, threshold)
 {
     this->blocks = blocks;
     for (auto &blockRate : blockRates)
@@ -168,7 +171,6 @@ Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vec
         updates.push_back({blockRate.first, BlockParams(blockRate.second, blockRate.first->params.children)});
     }
 }
-
 
 // take the computed global rates into account to compute the income needed
 float Condition::IncomeNeeded()

@@ -1,3 +1,33 @@
 Waterfall computation.
 
 Conditions: Sum of blocks (either revenue or turnover) gets above some amount.
+
+Example: b1->b2->b3
+Originally b1 takes 25%, b2 50%, b3 100%
+Condition 1: if revenue of b1 reaches 200, then b1 local rate becomes .01, and b2 local rate becomes 0.9
+Condition 2: if revenue of b2 reaches 250, then b2 local rate becomes 0
+
+Compuation step by step:
+Data are always given for b1,b2,b3 in this order.
+
+globalRevenueRate = 0.25
+globalRevenueRate = 0.375
+globalRevenueRate = 0.375
+MinIncomeNeeded = 666.667
+Revenue: 166.667   Turnover: 666.667
+Revenue: 250   Turnover: 500
+Revenue: 250   Turnover: 250
+globalRevenueRate = 0.25
+globalRevenueRate = 0
+globalRevenueRate = 0.75
+MinIncomeNeeded = 133.333
+Revenue: 200   Turnover: 800
+Revenue: 250   Turnover: 600
+Revenue: 350   Turnover: 350
+globalRevenueRate = 0.01
+globalRevenueRate = 0.891
+globalRevenueRate = 0.099
+MinIncomeNeeded = -1
+Revenue: 202   Turnover: 1000
+Revenue: 428.2   Turnover: 798
+Revenue: 369.8   Turnover: 369.8
