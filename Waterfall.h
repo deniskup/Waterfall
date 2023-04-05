@@ -40,7 +40,7 @@ class Condition
 {
 public:
     Condition(CondType type, float threshold);
-    Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *, BlockParams>> updates);
+    Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *,float>> blockRates); //change rates of blocks
 
     // it is either a simple threshold on a block value, or on the sum of block values, or on revenues or turnovers
 

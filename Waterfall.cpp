@@ -11,8 +11,9 @@ int main()
     Block *b1 = new Block(0.25, b2);
     w->blocks = {b1, b2, b3};
 
-    w->addCondition(new Condition(CondType::REVENUE, 400, {b2}, {{b2, BlockParams(0, b2->params.children)}}));
-    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, BlockParams(.01, b1->params.children)}}));
+    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, .01},{b2,.9}}));
+    w->addCondition(new Condition(CondType::REVENUE, 500, {b2}, {{b2,0}}));
+    
 
     w->runIncome(b1, 1000);
     w->printValues();
@@ -159,11 +160,15 @@ Condition::Condition(CondType type, float threshold) : type(type), threshold(thr
 {
 }
 
-Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *, BlockParams>> updates) : Condition(type, threshold)
+Condition::Condition(CondType type, float threshold, vector<Block *> blocks, vector<pair<Block *,float>> blockRates) : Condition(type, threshold)
 {
     this->blocks = blocks;
-    this->updates = updates;
+    for (auto &blockRate : blockRates)
+    {
+        updates.push_back({blockRate.first, BlockParams(blockRate.second, blockRate.first->params.children)});
+    }
 }
+
 
 // take the computed global rates into account to compute the income needed
 float Condition::IncomeNeeded()
