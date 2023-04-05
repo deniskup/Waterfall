@@ -193,7 +193,7 @@ float Condition::IncomeNeeded()
     }
     // income needed = (threshold - amountDone) / condRate
     if (condRate == 0)
-        needed = -1; // avoid division by 0 (no condition
+        needed = -1; // avoid division by 0, -1 convention for not reachable
     else
         needed = (threshold - amountDone) / condRate;
     return needed;
