@@ -61,7 +61,7 @@ Condition *Waterfall::findFirstCondition()
         }
         float incomeNeeded = condition->IncomeNeeded();
         if (MinIncomeNeeded == -1 || (incomeNeeded < MinIncomeNeeded && incomeNeeded > 0))
-        // we assume for now that two conditions are not reach simultaneously, tests to be added to take care of this case
+        // we assume for now that two conditions are not reached simultaneously, tests to be added to take care of this case
         {
             MinIncomeNeeded = incomeNeeded;
             firstCondition = condition;
