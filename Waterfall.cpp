@@ -6,15 +6,18 @@ using namespace std;
 int main()
 {
     Waterfall *w = new Waterfall();
-    Block *b3 = new Block(1.);
-    Block *b2 = new Block(0.5, b3);
-    Block *b1 = new Block(0.25, b2);
+    Block *b3 = new Block(.2);
+    Block *b2 = new Block(.2, b3);
+    Block *b1 = new Block(0, b2);
+    b1->revenue=50;
     w->blocks = {b1, b2, b3};
 
     // if revenue of b1 reaches 200, then b1 local rate becomes .01, and b2 local rate becomes 0.9
-    w->addCondition(new Condition(CondType::REVENUE, 200, {b1}, {{b1, .01}, {b2, .9}}));
+    w->addCondition(new Condition(CondType::REVENUE, 100, {b1,b3}, {{b3, 0}}));
+    w->addCondition(new Condition(CondType::REVENUE, 60, {b1,b3}, {{b1, .1}}));
+
     // if revenue of b2 reaches 250, then b2 local rate becomes 0
-    w->addCondition(new Condition(CondType::REVENUE, 250, {b2}, {{b2, 0}}));
+    //w->addCondition(new Condition(CondType::REVENUE, 250, {b2}, {{b2, 0}}));
 
     w->runIncome(b1, 1000);
     return 0;
@@ -25,15 +28,15 @@ void Waterfall::addCondition(Condition *c)
     conditions.push_back(c);
 }
 
-void Waterfall::localComputeRates(Block *startBlock, float initialRate)
+void Waterfall::internalComputeRates(Block *startBlock, float initialRate)
 {
-    startBlock->globalRevenueRate = startBlock->params.localRate * initialRate;
-    startBlock->globalTurnoverRate = initialRate;
+    startBlock->globalRevenueRate += startBlock->params.localRate * initialRate;
+    startBlock->globalTurnoverRate += initialRate;
     float remainRate = initialRate - startBlock->globalRevenueRate;
     cout << "globalRevenueRate = " << startBlock->globalRevenueRate << endl;
     for (auto &child : startBlock->params.children)
     {
-        localComputeRates(child.first, child.second * remainRate); // pass the remains to each child
+        internalComputeRates(child.first, child.second * remainRate); // pass the remains to each child
     }
 }
 
@@ -46,7 +49,7 @@ void Waterfall::computeRates(Block *startBlock)
         block->globalRevenueRate = 0;
         block->globalTurnoverRate = 0;
     }
-    localComputeRates(startBlock, 1);
+    internalComputeRates(startBlock, 1);
 }
 
 Condition *Waterfall::findFirstCondition()

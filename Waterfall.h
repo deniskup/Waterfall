@@ -72,5 +72,5 @@ public:
     void printValues();                                     // print revenues and turnovers of all blocks
 
 private:
-    void localComputeRates(Block *startBlock, float initialRate); // compute the rates for each block, initially called on (startBlock,1).
+    void internalComputeRates(Block *startBlock, float initialRate); // compute the rates for each block, initially called on (startBlock,1).
 };
