@@ -2,7 +2,7 @@ Waterfall computation.
 
 Conditions: Sum of blocks (either revenue or turnover) gets above some amount.
 
-To add: transferAmount, amount (by running different scenarios in parallele, then verifying which one is correct)
+To add: transferAmount, amount (by running different scenarios in parallel, then verifying which one is correct)
 
 
 
